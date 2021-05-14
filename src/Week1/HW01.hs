@@ -14,11 +14,29 @@ dropLastDigit n = n `div` 10
 
 -- Exercise 2 -----------------------------------------
 
+
+-- non tail recursive
 toRevDigits :: Integer -> [Integer]
-toRevDigits n = helper n []
+toRevDigits n 
+        | n <= 0 = [] 
+        | otherwise = lastDigit n : toRevDigits (dropLastDigit n)
+
+-- tail recursive version, assuming reverse is tail recursive
+toRevDigits' :: Integer -> [Integer]
+toRevDigits' n = helper n []
     where
-        helper x acc 
-            | x <= 0 = reverse acc 
+        helper :: Integer -> [Integer] -> [Integer]
+        helper x acc
+            | x <= 0 = reverse acc
+            | otherwise = helper (dropLastDigit x) (lastDigit x : acc)
+
+-- tail recursive non reversed digits
+toDigits :: Integer -> [Integer]
+toDigits n = helper n []
+    where
+        helper :: Integer -> [Integer] -> [Integer]
+        helper x acc
+            | x <= 0 = acc
             | otherwise = helper (dropLastDigit x) (lastDigit x : acc)
     
 
@@ -37,7 +55,12 @@ doubleEveryOther lst = helper 0 lst []
 
 -- Calculate the sum of all the digits in every Integer.
 sumDigits :: [Integer] -> Integer
-sumDigits lst = sum lst 
+-- Performs in one pass
+sumDigits = foldr (helper) 0
+    where
+        helper :: Integer -> (Integer -> Integer)
+        helper n = 
+            toDigits n & sum & (+)
 
 
 -- Exercise 5 -----------------------------------------
@@ -45,7 +68,7 @@ sumDigits lst = sum lst
 -- Validate a credit card number using the above functions.
 
 luhn :: Integer -> Bool
-luhn n = toRevDigits n & doubleEveryOther & sumDigits & (`mod` 10)  & (==10)
+luhn n = toRevDigits n & doubleEveryOther & sumDigits & (`mod` 10)  & (==0)
 
 -- Exercise 6 -----------------------------------------
 

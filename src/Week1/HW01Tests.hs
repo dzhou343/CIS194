@@ -27,6 +27,9 @@ testSumDigits (inp, exp) = sumDigits inp == exp
 testLuhn :: (Integer, Bool) -> Bool 
 testLuhn (inp,exp) = luhn inp == exp
 
+testHanoi :: (Integer, [Move]) -> Bool
+testHanoi (inp,exp) = hanoi inp "a" "b" "c" == exp
+
 ex1Tests :: [Test]
 ex1Tests = [ Test "lastDigit test" testLastDigit
              [(123, 3), (1234, 4), (5, 5), (10, 0), (0, 0)]
@@ -59,13 +62,16 @@ ex4Tests = [Test "sumDigit tests" testSumDigits
 
 ex5Tests :: [Test]
 ex5Tests = [Test "luhn tests" testLuhn
-            [(79927398710, True)]
+            [(5594589764218858, True), (1234567898765432, False)]
             ]
 
 -- Exercise 6 -----------------------------------------
 
 ex6Tests :: [Test]
-ex6Tests = []
+ex6Tests = [Test "hanoi tests" testHanoi
+            [(2,[("a","c"), ("a","b"), ("c", "b")]),
+            (3,[("a","b"),("a","c"),("b","c"),("a","b"),("c","a"),("c","b"),("a","b")])]
+            ]
 
 -- All Tests ------------------------------------------
 
