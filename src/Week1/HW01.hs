@@ -14,6 +14,8 @@ dropLastDigit n = n `div` 10
 
 -- Exercise 2 -----------------------------------------
 
+{- toRevDigits should convert positive Integers to a list of digits. (For
+0 or negative inputs, toRevDigits should return the empty list.) -}
 
 -- non tail recursive
 toRevDigits :: Integer -> [Integer]
@@ -43,6 +45,7 @@ toDigits n = helper n []
 -- Exercise 3 -----------------------------------------
 
 -- Double every second number in a list starting on the left.
+-- If only there was a mapi in haskell
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther lst = helper 0 lst [] 
     where 
