@@ -32,6 +32,7 @@ exactMatches (x:xs) (y:ys)
 -- Exercise 2 -----------------------------------------
 
 -- For each peg in xs, count how many times is occurs in ys
+-- ugly single pass function
 countColors :: Code -> [Int]
 countColors = foldl (helper) [0,0,0,0,0,0]
     where 
@@ -44,7 +45,12 @@ countColors = foldl (helper) [0,0,0,0,0,0]
             | x == Orange = [r,g,b,y,o+1,p]
             | x == Purple = [r,g,b,y,o,p+1]
             | otherwise = [r,g,b,y,o,p]
-            
+
+-- elegant, slightly less efficient
+countColors' :: Code -> [Int]
+countColors' x = map helper colors
+    where
+        helper c = length $ filter (==c) x         
 
 -- Count number of matches between the actual code and the guess
 matches :: Code -> Code -> Int
@@ -64,27 +70,38 @@ matches c1 c2 = foldl (+) 0 finLst
 
 -- Construct a Move from a guess given the actual code
 getMove :: Code -> Code -> Move
-getMove = undefined
+getMove x y = Move y exact actual
+    where
+        exact, actual :: Int 
+        exact = exactMatches x y 
+        actual = matches x y - exact
 
 -- Exercise 4 -----------------------------------------
 
 isConsistent :: Move -> Code -> Bool
-isConsistent = undefined
+isConsistent mv@(Move x _ _ ) y = mv == getMove x y 
 
 -- Exercise 5 -----------------------------------------
 
 filterCodes :: Move -> [Code] -> [Code]
-filterCodes = undefined
+filterCodes x = filter (isConsistent x)
 
 -- Exercise 6 -----------------------------------------
 
 allCodes :: Int -> [Code]
-allCodes = undefined
+allCodes 0 = [[]]
+allCodes i = [x:xs | x <- colors, xs <- allCodes (i-1)]
 
 -- Exercise 7 -----------------------------------------
 
 solve :: Code -> [Move]
-solve = undefined
+solve code = helper $ allCodes $ length code
+    where
+        helper :: [Code] -> [Move]
+        helper [] = []
+        helper c@(guess : _) = m : helper (filterCodes m c)
+            where 
+                m = getMove code guess
 
 -- Bonus ----------------------------------------------
 
