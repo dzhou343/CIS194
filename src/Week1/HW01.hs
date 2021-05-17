@@ -65,6 +65,15 @@ sumDigits = foldr (helper) 0
         helper n = 
             toDigits n & sum & (+)
 
+sumDigits' :: [Integer] -> Integer 
+sumDigits' = sum . map (sum . toDigits)
+{- sumDigits' = sum . map sum . toDigits 
+ -}
+
+ -- make explicit argument version with lst arguments as xs
+
+sumDigits'' :: [Integer] -> Integer
+sumDigits'' xs = sum $ map (sum . toDigits) xs
 
 -- Exercise 5 -----------------------------------------
 
