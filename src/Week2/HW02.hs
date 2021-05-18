@@ -53,7 +53,7 @@ countColors' x = map helper colors
         helper c = length $ filter (==c) x         
 
 -- Count number of matches between the actual code and the guess
-matches :: Code -> Code -> Int
+{- matches :: Code -> Code -> Int
 matches c1 c2 = sum finLst
     where 
         zippedLst :: [(Int,Int)]
@@ -73,7 +73,11 @@ matches' c1 c2 = sum finLst
             | x > 0 && y > 0 = 1
             | otherwise = 0
         finLst :: [Int]
-        finLst = zipWith bothPresent (countColors c1) (countColors c2)
+        finLst = zipWith bothPresent (countColors c1) (countColors c2) -}
+
+-- Correct matches 
+matches'' :: Code -> Code -> Int
+matches'' c1 c2 = sum (zipWith min (countColors c1) (countColors c2))
         
         
 
