@@ -84,7 +84,6 @@ desugar st =
 
 
 -- Exercise 4 -----------------------------------------
-
 evalSimple :: State -> DietStatement -> State
 evalSimple st ds = 
   case ds of 
@@ -99,7 +98,7 @@ evalSimple st ds =
       else 
         st
     DSequence ds1 ds2 -> evalSimple (evalSimple st ds1) ds2 
-    DSkip -> st
+    _ -> st
 
 run :: State -> Statement -> State
 run state statement = evalSimple state (desugar statement)
@@ -176,3 +175,12 @@ fibonacci = slist [ Assign "F0" (Val 1)
                            )
                        )
                   ]
+
+runFact :: State
+runFact = run (extend empty "In" 4) factorial
+
+runSqrt :: State
+runSqrt = run (extend empty "In" 16) squareRoot
+
+runFibo :: State
+runFibo = run (extend empty "In" 4) fibonacci
