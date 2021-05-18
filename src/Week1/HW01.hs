@@ -44,15 +44,14 @@ toDigits n = helper n []
 -- Exercise 3 -----------------------------------------
 
 -- Double every second number in a list starting on the left.
--- If only there was a mapi in haskell
-
+-- Original solution, note to self, avoid using head and tail in the future, can cause runtime exceptions
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther lst = helper 0 lst [] 
     where 
         helper :: Integer -> [Integer] -> [Integer] -> [Integer]
         helper ctr trav acc
             | null trav = reverse acc
-            | ctr `mod` 2 == 1 = helper (ctr + 1) (tail trav) (head trav * 2 : acc)
+            | odd ctr = helper (ctr + 1) (tail trav) (head trav * 2 : acc)
             | otherwise = helper (ctr + 1) (tail trav) (head trav : acc)
 
 
@@ -61,7 +60,27 @@ doubleEveryOther' = zipWith helper [1..]
     where
         helper :: Integer -> Integer -> Integer
         helper x y 
-            | x `mod` 2 == 1 = y*2
+            | even x = y*2
+            | otherwise = y
+
+-- Version using pattern matching within the helper
+doubleEveryOther'' :: [Integer] -> [Integer]
+doubleEveryOther'' lst = helper 0 lst [] 
+    where 
+        helper :: Integer -> [Integer] -> [Integer] -> [Integer]
+        helper _ [] acc = reverse acc
+        helper ctr (x:xs) acc 
+            | odd ctr = helper (ctr + 1) (xs) (x * 2 : acc)
+            | otherwise = helper (ctr + 1) (xs) (x:acc)
+
+-- Version using zipWith and cycle
+
+doubleEveryOther''' :: [Integer] -> [Integer]
+doubleEveryOther''' = zipWith helper (cycle [1,2])
+    where 
+        helper :: Integer -> Integer -> Integer
+        helper x y 
+            | even x = y*2
             | otherwise = y
 
         
