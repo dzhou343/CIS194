@@ -19,7 +19,7 @@ testToRevDigit :: (Integer, [Integer]) -> Bool
 testToRevDigit (n, d) = toRevDigits n == d
 
 testDoubleEveryOther :: ([Integer], [Integer]) -> Bool 
-testDoubleEveryOther (inp, exp) = doubleEveryOther inp == exp
+testDoubleEveryOther (inp, exp) = doubleEveryOther''' inp == exp
 
 testSumDigits :: ([Integer], Integer) -> Bool
 testSumDigits (inp, exp) = sumDigits inp == exp

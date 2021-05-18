@@ -2,7 +2,6 @@
 module HW01 where
 import Data.Function
 
-
 -- Exercise 1 -----------------------------------------
 
 -- Get the last digit from a number
@@ -45,14 +44,46 @@ toDigits n = helper n []
 -- Exercise 3 -----------------------------------------
 
 -- Double every second number in a list starting on the left.
--- If only there was a mapi in haskell
+-- Original solution, note to self, avoid using head and tail in the future, can cause runtime exceptions
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther lst = helper 0 lst [] 
     where 
+        helper :: Integer -> [Integer] -> [Integer] -> [Integer]
         helper ctr trav acc
-            | trav == [] = reverse acc
-            | ctr `mod` 2 == 1 = helper (ctr + 1) (tail trav) (head trav * 2 : acc)
+            | null trav = reverse acc
+            | odd ctr = helper (ctr + 1) (tail trav) (head trav * 2 : acc)
             | otherwise = helper (ctr + 1) (tail trav) (head trav : acc)
+
+
+doubleEveryOther' :: [Integer] -> [Integer]
+doubleEveryOther' = zipWith helper [1..] 
+    where
+        helper :: Integer -> Integer -> Integer
+        helper x y 
+            | even x = y*2
+            | otherwise = y
+
+-- Version using pattern matching within the helper
+doubleEveryOther'' :: [Integer] -> [Integer]
+doubleEveryOther'' lst = helper 0 lst [] 
+    where 
+        helper :: Integer -> [Integer] -> [Integer] -> [Integer]
+        helper _ [] acc = reverse acc
+        helper ctr (x:xs) acc 
+            | odd ctr = helper (ctr + 1) (xs) (x * 2 : acc)
+            | otherwise = helper (ctr + 1) (xs) (x:acc)
+
+-- Version using zipWith and cycle
+
+doubleEveryOther''' :: [Integer] -> [Integer]
+doubleEveryOther''' = zipWith helper (cycle [1,2])
+    where 
+        helper :: Integer -> Integer -> Integer
+        helper x y 
+            | even x = y*2
+            | otherwise = y
+
+        
 
 -- Exercise 4 -----------------------------------------
 
@@ -61,7 +92,7 @@ sumDigits :: [Integer] -> Integer
 -- Performs in one pass
 sumDigits = foldr (helper) 0
     where
-        helper :: Integer -> (Integer -> Integer)
+        helper :: Integer -> Integer -> Integer
         helper n = 
             toDigits n & sum & (+)
 
@@ -81,6 +112,9 @@ sumDigits'' xs = sum $ map (sum . toDigits) xs
 
 luhn :: Integer -> Bool
 luhn n = toRevDigits n & doubleEveryOther & sumDigits & (`mod` 10)  & (==0)
+
+luhn' :: Integer -> Bool
+luhn' = (== 0) . (`mod` 10) . sumDigits . doubleEveryOther . toRevDigits
 
 -- Exercise 6 -----------------------------------------
 
