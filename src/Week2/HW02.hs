@@ -89,7 +89,7 @@ getMove x y = Move y exact actual
     where
         exact, actual :: Int 
         exact = exactMatches x y 
-        actual = matches x y - exact
+        actual = matches'' x y - exact
 
 -- Exercise 4 -----------------------------------------
 
