@@ -34,17 +34,17 @@ exactMatches (x:xs) (y:ys)
 -- For each peg in xs, count how many times is occurs in ys
 -- ugly single pass function
 countColors :: Code -> [Int]
-countColors = foldl (helper) [0,0,0,0,0,0]
-    where 
+countColors = foldl helper [0,0,0,0,0,0]
+    where
         helper :: [Int] -> Peg -> [Int]
-        helper [r,g,b,y,o,p] x
-            | x == Red =[r+1,g,b,y,o,p]
-            | x == Green = [r,g+1,b,y,o,p]
-            | x == Blue = [r,g,b+1,y,o,p]
-            | x == Yellow = [r,g,b,y+1,o,p]
-            | x == Orange = [r,g,b,y,o+1,p]
-            | x == Purple = [r,g,b,y,o,p+1]
-            | otherwise = [r,g,b,y,o,p]
+        helper [r,g,b,y,o,p] peg = 
+            case peg of 
+                Red -> [r+1,g,b,y,o,p]
+                Green -> [r,g+1,b,y,o,p]
+                Blue -> [r,g,b+1,y,o,p]
+                Yellow ->[r,g,b,y+1,o,p]
+                Orange -> [r,g,b,y,o+1,p]
+                Purple -> [r,g,b,y,o,p+1]
 
 -- elegant, slightly less efficient
 countColors' :: Code -> [Int]
@@ -54,7 +54,7 @@ countColors' x = map helper colors
 
 -- Count number of matches between the actual code and the guess
 matches :: Code -> Code -> Int
-matches c1 c2 = foldl (+) 0 finLst
+matches c1 c2 = sum finLst
     where 
         zippedLst :: [(Int,Int)]
         zippedLst = zip (countColors c1) (countColors c2)
@@ -64,6 +64,17 @@ matches c1 c2 = foldl (+) 0 finLst
         bothPresent (x,y)
             | x > 0 && y > 0 = 1
             | otherwise = 0
+
+matches' :: Code -> Code -> Int 
+matches' c1 c2 = sum finLst
+    where 
+        bothPresent :: Int -> Int -> Int
+        bothPresent x y 
+            | x > 0 && y > 0 = 1
+            | otherwise = 0
+        finLst :: [Int]
+        finLst = zipWith bothPresent (countColors c1) (countColors c2)
+        
         
 
 -- Exercise 3 -----------------------------------------
