@@ -2,7 +2,6 @@
 module HW01 where
 import Data.Function
 
-
 -- Exercise 1 -----------------------------------------
 
 -- Get the last digit from a number
@@ -14,30 +13,88 @@ dropLastDigit n = n `div` 10
 
 -- Exercise 2 -----------------------------------------
 
+{- toRevDigits should convert positive Integers to a list of digits. (For
+0 or negative inputs, toRevDigits should return the empty list.) -}
+
+-- non tail recursive
 toRevDigits :: Integer -> [Integer]
-toRevDigits n = helper n []
+toRevDigits n 
+        | n <= 0 = [] 
+        | otherwise = lastDigit n : toRevDigits (dropLastDigit n)
+
+-- tail recursive version, assuming reverse is tail recursive
+toRevDigits' :: Integer -> [Integer]
+toRevDigits' n = helper n []
     where
-        helper x acc 
-            | x <= 0 = reverse acc 
+        helper :: Integer -> [Integer] -> [Integer]
+        helper x acc
+            | x <= 0 = reverse acc
+            | otherwise = helper (dropLastDigit x) (lastDigit x : acc)
+
+-- tail recursive non reversed digits
+toDigits :: Integer -> [Integer]
+toDigits n = helper n []
+    where
+        helper :: Integer -> [Integer] -> [Integer]
+        helper x acc
+            | x <= 0 = acc
             | otherwise = helper (dropLastDigit x) (lastDigit x : acc)
     
 
 -- Exercise 3 -----------------------------------------
 
 -- Double every second number in a list starting on the left.
+-- Original solution, note to self, avoid using head and tail in the future, can cause runtime exceptions
 doubleEveryOther :: [Integer] -> [Integer]
 doubleEveryOther lst = helper 0 lst [] 
     where 
+        helper :: Integer -> [Integer] -> [Integer] -> [Integer]
         helper ctr trav acc
-            | trav == [] = reverse acc
-            | ctr `mod` 2 == 1 = helper (ctr + 1) (tail trav) (head trav * 2 : acc)
+            | null trav = reverse acc
+            | odd ctr = helper (ctr + 1) (tail trav) (head trav * 2 : acc)
             | otherwise = helper (ctr + 1) (tail trav) (head trav : acc)
+
+
+doubleEveryOther' :: [Integer] -> [Integer]
+doubleEveryOther' = zipWith helper [1..] 
+    where
+        helper :: Integer -> Integer -> Integer
+        helper x y 
+            | even x = y*2
+            | otherwise = y
+
+-- Version using pattern matching within the helper
+doubleEveryOther'' :: [Integer] -> [Integer]
+doubleEveryOther'' lst = helper 0 lst [] 
+    where 
+        helper :: Integer -> [Integer] -> [Integer] -> [Integer]
+        helper _ [] acc = reverse acc
+        helper ctr (x:xs) acc 
+            | odd ctr = helper (ctr + 1) (xs) (x * 2 : acc)
+            | otherwise = helper (ctr + 1) (xs) (x:acc)
+
+-- Version using zipWith and cycle
+
+doubleEveryOther''' :: [Integer] -> [Integer]
+doubleEveryOther''' = zipWith helper (cycle [1,2])
+    where 
+        helper :: Integer -> Integer -> Integer
+        helper x y 
+            | even x = y*2
+            | otherwise = y
+
+        
 
 -- Exercise 4 -----------------------------------------
 
 -- Calculate the sum of all the digits in every Integer.
 sumDigits :: [Integer] -> Integer
-sumDigits lst = sum lst 
+-- Performs in one pass
+sumDigits = foldr (helper) 0
+    where
+        helper :: Integer -> Integer -> Integer
+        helper n = 
+            toDigits n & sum & (+)
 
 
 -- Exercise 5 -----------------------------------------
@@ -45,7 +102,10 @@ sumDigits lst = sum lst
 -- Validate a credit card number using the above functions.
 
 luhn :: Integer -> Bool
-luhn n = toRevDigits n & doubleEveryOther & sumDigits & (`mod` 10)  & (==10)
+luhn n = toRevDigits n & doubleEveryOther & sumDigits & (`mod` 10)  & (==0)
+
+luhn' :: Integer -> Bool
+luhn' = (== 0) . (`mod` 10) . sumDigits . doubleEveryOther . toRevDigits
 
 -- Exercise 6 -----------------------------------------
 
