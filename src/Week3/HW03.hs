@@ -1,4 +1,4 @@
-module HW03 where
+module Week3.HW03 where
 
 data Expression =
     Var String                   -- Variable
