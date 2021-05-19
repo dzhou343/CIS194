@@ -20,4 +20,13 @@ spec =
                 let s = evalSimple empty (DAssign "A" (Val 10)) in s "A" `shouldBe` 10
         describe "run" $ do
             it "should evaluate sugary statements" $
-                let s = run empty (Assign "A" (Val 10)) in s "A" `shouldBe` 10 
+                let s = run empty (Assign "A" (Val 10)) in s "A" `shouldBe` 10
+        describe "runFact" $ do
+            it "should evaluate factorial of 4" $ 
+               runFact "Out" `shouldBe` 24
+        describe "runSqrt" $ do
+            it "should evaluate square root of 16" $ 
+               runSqrt "B" `shouldBe` 4
+        describe "runFibo" $ do
+            it "should evaluate fibonacci 4" $ 
+               runFibo "Out" `shouldBe` 5 
