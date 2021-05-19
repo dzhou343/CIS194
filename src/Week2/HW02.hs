@@ -94,7 +94,7 @@ getMove x y = Move y exact actual
 -- Exercise 4 -----------------------------------------
 
 isConsistent :: Move -> Code -> Bool
-isConsistent mv@(Move x _ _ ) y = mv == getMove x y 
+isConsistent mv@(Move x _ _ ) y = mv == getMove y x
 
 -- Exercise 5 -----------------------------------------
 
@@ -114,6 +114,7 @@ solve code = helper $ allCodes $ length code
     where
         helper :: [Code] -> [Move]
         helper [] = []
+        helper [_] = []
         helper c@(guess : _) = m : helper (filterCodes m c)
             where 
                 m = getMove code guess
