@@ -1,5 +1,5 @@
 {-# OPTIONS_GHC -Wall #-}
-module HW01 where
+module Week1.HW01 where
 import Data.Function
 
 -- Exercise 1 -----------------------------------------

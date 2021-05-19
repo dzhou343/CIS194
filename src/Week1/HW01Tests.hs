@@ -4,7 +4,7 @@
 
 module HW01Tests where
 
-import HW01
+import Week1.HW01
 import Testing
 
 -- Exercise 1 -----------------------------------------
