@@ -78,7 +78,7 @@ desugar st =
     Incr s -> DAssign s (Op (Var s) Plus (Val 1))
     If e s1 s2 -> DIf e (desugar s1) (desugar s2)
     While e s -> DWhile e (desugar s)
-    For s1 e s2 s3 -> desugar (Sequence s1 (While e (Sequence s2 s3)))
+    For s1 e s2 s3 -> DSequence (desugar s1) (DWhile e (DSequence (desugar s3) (desugar s2)))
     Sequence s1 s2 -> DSequence (desugar s1) (desugar s2)
     _ -> DSkip
 
@@ -92,11 +92,12 @@ evalSimple st ds =
       if evalE st e == 1 
         then evalSimple st ds1
         else evalSimple st ds2
-    DWhile e while@(DWhile expr ds) -> 
-      if evalE st e == 1 then 
-        evalSimple st (DSequence ds while)
-      else 
-        st
+    DWhile e ds1 -> 
+      if evalE st e == 1 
+        then 
+          evalSimple st (DSequence ds1 (DWhile e ds1))
+        else 
+          st
     DSequence ds1 ds2 -> evalSimple (evalSimple st ds1) ds2 
     _ -> st
 
@@ -180,7 +181,7 @@ runFact :: State
 runFact = run (extend empty "In" 4) factorial
 
 runSqrt :: State
-runSqrt = run (extend empty "In" 16) squareRoot
+runSqrt = run (extend empty "A" 16) squareRoot
 
 runFibo :: State
 runFibo = run (extend empty "In" 4) fibonacci
