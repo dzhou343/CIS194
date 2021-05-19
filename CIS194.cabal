@@ -27,6 +27,7 @@ library
   exposed-modules:
       Lib
       Week1.HW01
+      Week2.HW02
   other-modules:
       Paths_CIS194
   hs-source-dirs:
@@ -52,6 +53,7 @@ test-suite CIS194-test
   main-is: Spec.hs
   other-modules:
       Week1Spec
+      Week2Spec
       Paths_CIS194
   hs-source-dirs:
       test
