@@ -4,7 +4,7 @@
 
 module HW01Tests where
 
-import HW01
+import Week1.HW01
 import Testing
 
 -- Exercise 1 -----------------------------------------
@@ -19,7 +19,7 @@ testToRevDigit :: (Integer, [Integer]) -> Bool
 testToRevDigit (n, d) = toRevDigits n == d
 
 testDoubleEveryOther :: ([Integer], [Integer]) -> Bool 
-testDoubleEveryOther (inp, exp) = doubleEveryOther inp == exp
+testDoubleEveryOther (inp, exp) = doubleEveryOther''' inp == exp
 
 testSumDigits :: ([Integer], Integer) -> Bool
 testSumDigits (inp, exp) = sumDigits inp == exp
