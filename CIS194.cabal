@@ -28,6 +28,7 @@ library
       Lib
       Week1.HW01
       Week2.HW02
+      Week3.HW03
   other-modules:
       Paths_CIS194
   hs-source-dirs:
@@ -54,6 +55,7 @@ test-suite CIS194-test
   other-modules:
       Week1Spec
       Week2Spec
+      Week3Spec
       Paths_CIS194
   hs-source-dirs:
       test
