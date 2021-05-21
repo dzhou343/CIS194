@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wall #-}
 module Week4.HW04 where
 
 import Data.List
@@ -26,7 +25,8 @@ instance (Num a, Eq a) => Eq (Poly a) where
 -- P [1,2,3] == [3x^2 + 2x + 1]
 
 instance (Num a, Eq a, Show a) => Show (Poly a) where
-    show (P []) = ""
+    show (P []) = "0"
+    show (P [0]) = "0"
     show (P b) = plusLst
         where 
             helper :: (Num a, Eq a, Show a) => Integer -> a -> String
@@ -36,6 +36,7 @@ instance (Num a, Eq a, Show a) => Show (Poly a) where
             helper 1 (-1) = "-x"
             helper 1 coeff = show coeff ++ "x"
             helper degree 1 = "x^" ++ show degree
+            helper degree (-1) = "-x^" ++ show degree
             helper degree coeff = show coeff ++ "x^" ++ show degree
             plusLst = intercalate " + " $ filter (/=[]) $ reverse $ zipWith helper [0..] b
  
