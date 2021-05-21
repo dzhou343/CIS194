@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wall #-}
 module Week2.HW02 where
 
 -- Mastermind -----------------------------------------

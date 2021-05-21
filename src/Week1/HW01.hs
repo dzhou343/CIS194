@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wall #-}
 module Week1.HW01 where
 import Data.Function
 
