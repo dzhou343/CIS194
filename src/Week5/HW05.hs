@@ -48,58 +48,79 @@ getBadTs victimPath transactionPath =
   do
     vf <- parseFile victimPath
     tf <- parseFile transactionPath
-    let res = case (vf, tf) of 
-          (Nothing , _) -> Nothing 
-          (_, Nothing ) -> Nothing 
-          (Just v, Just t) -> Just $ helper v t 
+    let res = case (vf, tf) of
+          (Nothing , _) -> Nothing
+          (_, Nothing ) -> Nothing
+          (Just v, Just t) -> Just $ helper v t
     return res
-      where 
+      where
         helper :: [TId] -> [Transaction] -> [Transaction]
         helper victim transactions = filter ((`elem` victim) . tid) transactions
 
 
-
+getBadTs' :: FilePath -> FilePath -> IO (Maybe [Transaction])
+getBadTs' victimPath transactionPath = 
+  do 
+    vf <- parseFile victimPath
+    tf <- parseFile transactionPath
+    return $ helper <$> vf <*> tf
+      where 
+        helper :: [TId] -> [Transaction] -> [Transaction]
+        helper victim transactions = filter ((`elem` victim) . tid) transactions 
 
 -- Exercise 5 -----------------------------------------
 
 getFlow :: [Transaction] -> Map String Integer
-getFlow ts = helper ts Map.empty 
-  where 
+getFlow ts = helper ts Map.empty
+  where
     helper :: [Transaction] -> Map String Integer -> Map String Integer
-    helper [] mp = mp 
-    helper (x:xs) mp = 
-      let amt = amount x in 
+    helper [] mp = mp
+    helper (x:xs) mp =
+      let amt = amount x in
         helper xs $ Map.insertWith (+) (from x) amt $ Map.insertWith (+) (to x) (negate amt) mp
+
+getFlow' :: [Transaction] -> Map String Integer
+getFlow' = foldr helper Map.empty
+  where
+    helper x mp =
+      let amt = amount x in
+        Map.insertWith (+) (from x) amt $ Map.insertWith (+) (to x) (negate amt) mp
+
 
 -- Exercise 6 -----------------------------------------
 
 getCriminal :: Map String Integer -> String
 getCriminal mp = helper (Map.toList mp) 0 "all is good"
-  where 
+  where
     helper :: [(String, Integer)] -> Integer -> String -> String
     helper [] _ crim = crim
-    helper ((k,v):xs) cntr crim = 
-      if v > cntr then 
-        helper xs v k 
-      else 
-        helper xs cntr crim 
+    helper ((k,v):xs) cntr crim =
+      if v > cntr then
+        helper xs v k
+      else
+        helper xs cntr crim
+
+getCriminal' :: Map String Integer -> String
+getCriminal' mp = helper (Map.toList mp) 0 "all is good"
+
+
 
 -- Exercise 7 -----------------------------------------
 
 undoTs :: Map String Integer -> [TId] -> [Transaction]
-undoTs mp idx = 
+undoTs mp idx =
   let (payer,payee) = partition ((> 0) . snd ) $ reverse $ sort $  Map.toList mp in
-  helper payer payee idx 
-    where 
+  helper payer payee idx
+    where
       helper [] _ _ = []
       helper _ [] _ = []
       helper _ _ [] = []
-      helper (pa:payers) (py:payees) (i:ids) 
+      helper (pa:payers) (py:payees) (i:ids)
         | snd pa == 0 = helper payers (py:payees) (i:ids)
         | snd py == 0 = helper (pa:payers) payees (i:ids)
-        | otherwise = 
-            let amt = min (abs $ snd $ pa) (abs $ snd $ py) in 
-              Transaction (fst pa) (fst py) amt i : 
+        | otherwise =
+            let amt = min (abs $ snd $ pa) (abs $ snd $ py) in
+              Transaction (fst pa) (fst py) amt i :
               helper ((fst pa, snd pa - amt) : payers) ((fst py, snd py - amt) : payees) ids
 
 
@@ -107,7 +128,7 @@ undoTs mp idx =
 -- Exercise 8 -----------------------------------------
 
 writeJSON :: ToJSON a => FilePath -> a -> IO ()
-writeJSON fp = BS.writeFile fp . encode 
+writeJSON fp = BS.writeFile fp . encode
 
 -- Exercise 9 -----------------------------------------
 
