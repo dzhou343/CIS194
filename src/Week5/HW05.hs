@@ -100,9 +100,6 @@ getCriminal mp = helper (Map.toList mp) 0 "all is good"
       else
         helper xs cntr crim
 
-getCriminal' :: Map String Integer -> String
-getCriminal' mp = helper (Map.toList mp) 0 "all is good"
-
 
 
 -- Exercise 7 -----------------------------------------
