@@ -60,6 +60,10 @@ nats = sIterate (+1) 0
 ruler :: Stream Integer
 ruler = sRepeat 0 `sInterleave` (sRepeat 1 `sInterleave` (sRepeat 2 `sInterleave` (sRepeat 3 `sInterleave` sRepeat 4)))
 
+ruler' :: Stream Integer
+ruler' = helper 0
+    where helper n = sRepeat n `sInterleave` helper (n + 1)
+
 -- Exercise 7 -----------------------------------------
 
 -- | Implementation of C rand
@@ -81,7 +85,7 @@ minMaxSlow xs = Just (minimum xs, maximum xs)
 minMax :: [Int] -> Maybe (Int, Int)
 minMax [] = Nothing
 minMax (x:xs) = Just (helper xs x x)
-    where 
+    where
         helper [] mini maxi = (mini,maxi)
         helper (x:xs) !mini !maxi = helper xs (x `min` mini) (x `max` maxi)
 
