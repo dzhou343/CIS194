@@ -101,8 +101,8 @@ qsortR vec
     | V.null vec = return V.empty
     | otherwise = details >>= helperSort
         where
-            details = getRandomR (0, V.length vec -1) >>= return . partitionAt vec
-            helperSort (l,m,h) = liftM2 (<>) (qsortR l) (Control.Monad.Random.liftM (cons m) (qsortR h))
+            details = partitionAt vec <$> getRandomR (0, V.length vec -1) 
+            helperSort (l,m,h) = liftM2 (<>) (qsortR l) (cons m <$> (qsortR h))
 
 
 
